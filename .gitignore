@@ -1,0 +1,7 @@
+build
+obj
+*~
+\#*
+*.out
+*.o
+*.mod
