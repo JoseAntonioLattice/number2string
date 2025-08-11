@@ -14,13 +14,17 @@ LIB = $(HOME)/Fortran/lib
 INC = $(HOME)/Fortran/include
 .PHONY : install all test readme cleanlib
 
-all : install $(LIB)/lib$(libname).so
 
-$(LIB)/lib$(libname).so.$(version): $(OBJECTS)
+all : install compile $(LIB)/lib$(libname).so
+
+
+$(LIB)/lib$(libname).so.$(version): $(OBJDIR)/number2string.o
 	$(FC) -shared -o $@ $^   
 
-$(OBJDIR)/%.o: $(SRCDIR)/%.f90 $(OBJDIR)
-	$(FC) -O3 -fpic -c -J $(INC) $< -o $@
+
+compile: $(SRCDIR)/number2string.f90
+	$(FC) -O3 -fpic -c -J $(INC) $< -o $(OBJDIR)/number2string.o
+
 
 $(LIB)/lib$(libname).so.$(major) : $(LIB)/lib$(libname).so.$(version)
 	ln -s $< $@
@@ -42,7 +46,7 @@ $(BUILD):
 	mkdir -p $@
 
 cleanlib:
-	rm -r $(LIB)/lib$(libname).* $(INC)/lib$(libname).*
+	rm -r $(LIB)/lib$(libname).* $(INC)/number2string.*
 
 readme:
 	pandoc -f gfm README.md -o doc/README.pdf
